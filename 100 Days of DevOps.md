@@ -1,5 +1,7 @@
 https://kodekloudhub.github.io/kodekloud-engineer/docs/projects/nautilus#infrastructure-details
 
+https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+
 <h1>Linux</h1>
 <h3>Day 1: Linux User Setup with Non-Interactive Shell</h3>
 
@@ -124,3 +126,44 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 		[sudo] password for banner: 
 		[banner@stapp03 ~]$ sudo systemctl restart sshd
 		[banner@stapp03 ~]$ 
+
+
+<h3>Day 4: Script Execution Permissions</h3>
+	In a bid to automate backup processes, the xFusionCorp Industries sysadmin team has developed a new bash script named xfusioncorp.sh. While the script has been distributed to all necessary servers, it lacks executable permissions on App Server 2 within the Stratos Datacenter.
+
+	Your task is to grant executable permissions to the /tmp/xfusioncorp.sh script on App Server 2. Additionally, ensure that all users have the capability to execute it.
+
+	thor@jumphost ~$ ssh steve@stapp02
+	The authenticity of host 'stapp02 (172.16.238.11)' can't be established.
+	ED25519 key fingerprint is SHA256:Gp9F345hUHCwu2muzQigkuHnfwDdyrkDURMs7f9ucaI.
+	This key is not known by any other names
+	Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+	Warning: Permanently added 'stapp02' (ED25519) to the list of known hosts.
+	steve@stapp02's password: 
+	[steve@stapp02 ~]$ 
+	[steve@stapp02 ~]$ ls -la /tmp/xfusioncorp.sh
+	---------- 1 root root 40 Aug  9 00:12 /tmp/xfusioncorp.sh
+	[steve@stapp02 ~]$ 
+	[steve@stapp02 ~]$ chmod 111 /tmp/xfusioncorp.sh
+	chmod: changing permissions of '/tmp/xfusioncorp.sh': Operation not permitted
+	[steve@stapp02 ~]$ sudo chmod 111 /tmp/xfusioncorp.sh
+
+	We trust you have received the usual lecture from the local System
+	Administrator. It usually boils down to these three things:
+
+		#1) Respect the privacy of others.
+		#2) Think before you type.
+		#3) With great power comes great responsibility.
+
+	[sudo] password for steve: 
+	[steve@stapp02 ~]$ 
+	[steve@stapp02 ~]$ ls -la /tmp/xfusioncorp.sh
+	---x------ 1 root root 40 Aug  9 00:12 /tmp/xfusioncorp.sh
+	[steve@stapp02 ~]$ 
+
+	[steve@stapp02 ~]$ sudo chmod a+x /tmp/xfusioncorp.sh
+	[steve@stapp02 ~]$ ls -la /tmp/xfusioncorp.sh
+	---x--x--x 1 root root 40 Aug  9 00:12 /tmp/xfusioncorp.sh
+	[steve@stapp02 ~]$ 
+
+

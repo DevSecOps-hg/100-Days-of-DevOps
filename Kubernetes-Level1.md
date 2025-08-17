@@ -103,6 +103,8 @@ Execute the command sleep 5
 
 Note: The kubectl utility on jump_host is set up to operate with the Kubernetes cluster.
 
+	thor@jumphost ~$ k create job countdown-devops --image debian:latest --dry-run=client -o yaml -- sleep 5 > job.yaml
+
 	thor@jumphost ~$ cat job.yaml 
 	apiVersion: batch/v1
 	kind: Job

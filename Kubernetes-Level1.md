@@ -22,7 +22,7 @@ Note: The kubectl utility on jump_host is set up to interact with the Kubernetes
 			
 	thor@jumphost ~$ cat rs.yaml 
 	apiVersion: apps/v1
-	kind: ReplicaSet				-- Change
+	kind: ReplicaSet				-- change
 	metadata:
 	  creationTimestamp: null
 	  labels:
@@ -47,7 +47,7 @@ Note: The kubectl utility on jump_host is set up to interact with the Kubernetes
 		spec:
 		  containers:
 		  - image: httpd:latest
-			name: httpd-container
+			name: httpd-container	-- change
 			resources: {}
 	status: {}
 
@@ -90,4 +90,37 @@ Note: The kubectl utility on jump_host is configured to work with the kubernetes
 				resources: {}
 			  restartPolicy: OnFailure
 	  schedule: '*/3 * * * *'
+	status: {}
+
+
+<h3>9 Create Countdown Job in Kubernetes</h3>
+The Nautilus DevOps team is crafting jobs in the Kubernetes cluster. While they're developing actual scripts/commands, they're currently setting up templates and testing jobs with dummy commands. Please create a job template as per details given below:
+
+Create a job named countdown-devops.
+The spec template should be named countdown-devops (under metadata), and the container should be named container-countdown-devops
+Utilize image debian with latest tag (ensure to specify as debian:latest), and set the restart policy to Never.
+Execute the command sleep 5
+
+Note: The kubectl utility on jump_host is set up to operate with the Kubernetes cluster.
+
+	thor@jumphost ~$ cat job.yaml 
+	apiVersion: batch/v1
+	kind: Job
+	metadata:
+	  creationTimestamp: null
+	  name: countdown-devops
+	spec:
+	  template:
+		metadata:
+		  creationTimestamp: null
+		  name: countdown-devops
+		spec:
+		  containers:
+		  - command:
+			- sleep
+			- "5"
+			image: debian:latest
+			name: container-countdown-devops
+			resources: {}
+		  restartPolicy: Never
 	status: {}

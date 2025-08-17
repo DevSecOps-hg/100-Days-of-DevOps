@@ -113,14 +113,14 @@ Note: The kubectl utility on jump_host is set up to operate with the Kubernetes 
 	  template:
 		metadata:
 		  creationTimestamp: null
-		  name: countdown-devops
+		  name: countdown-devops	-- add
 		spec:
 		  containers:
 		  - command:
 			- sleep
 			- "5"
 			image: debian:latest
-			name: container-countdown-devops
+			name: container-countdown-devops -- change
 			resources: {}
 		  restartPolicy: Never
 	status: {}

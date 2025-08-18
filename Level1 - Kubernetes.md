@@ -126,3 +126,82 @@ Note: The kubectl utility on jump_host is set up to operate with the Kubernetes 
 			resources: {}
 		  restartPolicy: Never
 	status: {}
+
+
+<h3>10 Set Up Time Check Pod in Kubernetes</h3>
+The Nautilus DevOps team needs a time check pod created in a specific Kubernetes namespace for logging purposes. Initially, it's for testing, but it may be integrated into an existing cluster later. Here's what's required:
+
+Create a pod called time-check in the datacenter namespace. The pod should contain a container named time-check, utilizing the busybox image with the latest tag (specify as busybox:latest).
+
+Create a config map named time-config with the data TIME_FREQ=10 in the same namespace.
+
+Configure the time-check container to execute the command: while true; do date; sleep $TIME_FREQ;done. Ensure the result is written /opt/devops/time/time-check.log. Also, add an environmental variable TIME_FREQ in the container, fetching its value from the config map TIME_FREQ key.
+
+Create a volume log-volume and mount it at /opt/devops/time within the container.
+
+Note: The kubectl utility on jump_host is configured to operate with the Kubernetes cluster.
+
+	thor@jumphost ~$ k get ns
+	NAME                 STATUS   AGE
+	default              Active   19m
+	kube-node-lease      Active   19m
+	kube-public          Active   19m
+	kube-system          Active   19m
+	local-path-storage   Active   18m
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k create ns datacenter
+	namespace/datacenter created
+	thor@jumphost ~$
+	thor@jumphost ~$ k -n datacenter create cm time-config --from-literal TIME_FREQ=10
+	configmap/time-config created
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k -n datacenter get cm
+	NAME               DATA   AGE
+	kube-root-ca.crt   1      103s
+	time-config        1      7s
+	thor@jumphost ~$ k -n datacenter run time-check --image busybox:latest --command -- sh -c "while true; do date; sleep $TIME_FREQ;done" --dry-run=client -o yaml > pod.yaml
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k -n datacenter run time-check --image busybox:latest --dry-run=client -o yaml --command -- sh -c "while true; do date; sleep $TIME_FREQ;done" > pod.yaml
+	thor@jumphost ~$ cat pod.yaml 
+	thor@jumphost ~$ cat pod.yaml 
+	apiVersion: v1
+	kind: Pod
+	metadata:
+	creationTimestamp: null
+	labels:
+		run: time-check
+	name: time-check
+	namespace: datacenter
+	spec:
+	containers:
+	- command:
+		- sh
+		- -c
+		- while true; do date; sleep ;done > /opt/devops/time/time-check.log
+		env:
+		- name: TIME_FREQ
+		valueFrom:
+			configMapKeyRef:
+			name: time-config
+			key: TIME_FREQ
+		volumeMounts:
+		- name: log-volume
+		mountPath: /opt/devops/time
+		image: busybox:latest
+		name: time-check
+		resources: {}
+	volumes:
+		- name: log-volume
+		emptyDir: {}
+	dnsPolicy: ClusterFirst
+	restartPolicy: Always
+	status: {}
+	thor@jumphost ~$ k -n datacenter get po,cm
+	NAME             READY   STATUS    RESTARTS   AGE
+	pod/time-check   1/1     Running   0          57s
+
+	NAME                         DATA   AGE
+	configmap/kube-root-ca.crt   1      18m
+	configmap/time-config        1      17m
+
+

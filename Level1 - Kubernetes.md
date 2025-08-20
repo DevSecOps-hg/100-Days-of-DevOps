@@ -205,3 +205,39 @@ Note: The kubectl utility on jump_host is configured to operate with the Kuberne
 	configmap/time-config        1      17m
 
 
+<h3>11 Resolve Pod Deployment Issue</h3>
+A junior DevOps team member encountered difficulties deploying a stack on the Kubernetes cluster. The pod fails to start, presenting errors. Let's troubleshoot and rectify the issue promptly.
+
+There is a pod named webserver, and the container within it is named httpd-container, its utilizing the httpd:latest image.
+
+Additionally, there's a sidecar container named sidecar-container using the ubuntu:latest image.
+
+Identify and address the issue to ensure the pod is in the running state and the application is accessible.
+
+Note: The kubectl utility on jump_host is configured to interact with the Kubernetes cluster.
+
+	thor@jumphost ~$ k get po
+	NAME        READY   STATUS             RESTARTS   AGE
+	webserver   1/2     ImagePullBackOff   0          78s
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k logs webserver 
+	Defaulted container "httpd-container" out of: httpd-container, sidecar-container
+	Error from server (BadRequest): container "httpd-container" in pod "webserver" is waiting to start: trying and failing to pull image
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k edit po webserver  -- change the 'httpd:latests' to 'httpd:latest'
+	pod/webserver edited
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k get po -w
+	NAME        READY   STATUS             RESTARTS   AGE
+	webserver   1/2     ImagePullBackOff   0          3m40s
+	webserver   2/2     Running            0          3m41s
+	^Cthor@jumphost ~$ 
+	thor@jumphost ~$ 
+	thor@jumphost ~$ 
+
+
+<h3>12 Update Deployment and Service in Kubernetes</h3>
+
+<h3>13 Deploy Highly Available Pods with ReplicationController</h3>
+
+<h3>14 Resolve VolumeMounts Issue in Kubernetes</h3>

@@ -986,27 +986,118 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 
 
 <h3>Day 10: Linux Bash Scripts</h3>
-	The production support team of xFusionCorp Industries is working on developing some bash scripts to automate different day to day tasks. One is to create a bash script for taking websites backup. They have a static website running on App Server 2 in Stratos Datacenter, and they need to create a bash script named media_backup.sh which should accomplish the following tasks. (Also remember to place the script under /scripts directory on App Server 2).
-	a. Create a zip archive named xfusioncorp_media.zip of /var/www/html/media directory.
-	b. Save the archive in /backup/ on App Server 2. This is a temporary storage, as backups from this location will be clean on weekly basis. Therefore, we also need to save this backup archive on Nautilus Backup Server.
+	The production support team of xFusionCorp Industries is working on developing some bash scripts to automate different day to day tasks. One is to create a bash script for taking websites backup. They have a static website running on App Server 1 in Stratos Datacenter, and they need to create a bash script named ecommerce_backup.sh which should accomplish the following tasks. (Also remember to place the script under /scripts directory on App Server 1).
+	a. Create a zip archive named xfusioncorp_ecommerce.zip of /var/www/html/ecommerce directory.
+	b. Save the archive in /backup/ on App Server 1. This is a temporary storage, as backups from this location will be clean on weekly basis. Therefore, we also need to save this backup archive on Nautilus Backup Server.
 	c. Copy the created archive to Nautilus Backup Server server in /backup/ location.
 	d. Please make sure script won't ask for password while copying the archive file. Additionally, the respective server user (for example, tony in case of App Server 1) must be able to run it.
+	Note:
+	The zip package must be installed on given App Server before executing the script. This package is essential for creating the zip archive of the website files. You can install it either manually or through the bash script as needed.
 
 		thor@jumphost ~$ ssh tony@stapp01
 		The authenticity of host 'stapp01 (172.16.238.10)' can't be established.
-		ED25519 key fingerprint is SHA256:yHfHGhqXCBD4DoZFPnUf9hRwq0W6xDOIQFAWdsrsnEI.
+		ED25519 key fingerprint is SHA256:W+S9RUpM8FowOLdu6tpEMi6EpqyAqO/XnFG5NtcB5Zk.
 		This key is not known by any other names
 		Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 		Warning: Permanently added 'stapp01' (ED25519) to the list of known hosts.
 		tony@stapp01's password: 
+		Permission denied, please try again.
+		tony@stapp01's password: 
 		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ vi /scripts/official_backup.sh
+		[tony@stapp01 ~]$ vi /scripts/ecommerce_backup.sh
 		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ ping stbkp01
-		ping: socket: Operation not permitted
-		[tony@stapp01 ~]$ ping 172.16.238.16
-		ping: socket: Operation not permitted
-		[tony@stapp01 ~]$ sudo ping 172.16.238.16
+		[tony@stapp01 ~]$ cat /scripts/ecommerce_backup.sh
+		#! /bin/bash
+
+		zip -r /backup/xfusioncorp_ecommerce.zip /var/www/html/ecommerce
+		scp /backup/xfusioncorp_ecommerce.zip clint@stbkp01:/backup/
+
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ ls -la /scripts/ecommerce_backup.sh
+		-rw-r--r-- 1 tony tony 141 Aug 20 22:37 /scripts/ecommerce_backup.sh
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ chmod +x /scripts/ecommerce_backup.sh
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ ls -la /scripts/ecommerce_backup.sh
+		-rwxr-xr-x 1 tony tony 141 Aug 20 22:37 /scripts/ecommerce_backup.sh
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ ssh-keygen
+		Generating public/private rsa key pair.
+		Enter file in which to save the key (/home/tony/.ssh/id_rsa): 
+		Created directory '/home/tony/.ssh'.
+		Enter passphrase (empty for no passphrase): 
+		Enter same passphrase again: 
+		Your identification has been saved in /home/tony/.ssh/id_rsa
+		Your public key has been saved in /home/tony/.ssh/id_rsa.pub
+		The key fingerprint is:
+		SHA256:JRJg2o4hCjrb7GXAecDqJhoujXZEhr12VMUiV2vsObM tony@stapp01.stratos.xfusioncorp.com
+		The key's randomart image is:
+		+---[RSA 3072]----+
+		|    o.. +o       |
+		| . + . =...      |
+		|o B . = o+.      |
+		|+= X . .oo.      |
+		|= B =   S=       |
+		|.= * .    +      |
+		|+== +    E       |
+		|B+.+             |
+		|+.o              |
+		+----[SHA256]-----+
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ ssh-copy-id clint@stbkp01
+		/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/tony/.ssh/id_rsa.pub"
+		The authenticity of host 'stbkp01 (172.16.238.16)' can't be established.
+		ED25519 key fingerprint is SHA256:/fOVlvrbwARkWMsd23v7zdQ04Z4wKE4pnKnV8N/ddug.
+		This key is not known by any other names
+		Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+		/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+		/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+		clint@stbkp01's password: 
+		Permission denied, please try again.
+		clint@stbkp01's password: 
+
+		Number of key(s) added: 1
+
+		Now try logging into the machine, with:   "ssh 'clint@stbkp01'"
+		and check to make sure that only the key(s) you wanted were added.
+
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ ssh client@stbkp01
+		client@stbkp01's password: 
+		Permission denied, please try again.
+		client@stbkp01's password: 
+
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ ssh 'clint@stbkp01'
+		[clint@stbkp01 ~]$ 
+		[clint@stbkp01 ~]$ logout
+		Connection to stbkp01 closed.
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ ls -la /backup
+		total 24
+		drwxrwxrwx 2 root root  4096 Aug 20 22:26 .
+		drwxr-xr-x 1 root root 20480 Aug 20 22:42 ..
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ ssh 'clint@stbkp01'
+		Last login: Wed Aug 20 22:42:11 2025 from 172.16.238.10
+		[clint@stbkp01 ~]$ ls -la /backup/
+		total 24
+		drwxrwxrwx 2 root root  4096 Aug 20 22:26 .
+		drwxr-xr-x 1 root root 20480 Aug 20 22:42 ..
+		[clint@stbkp01 ~]$ 
+		[clint@stbkp01 ~]$ logout
+		Connection to stbkp01 closed.
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ /scripts/ecommerce_backup.sh 
+		/scripts/ecommerce_backup.sh: line 3: zip: command not found
+		stat local "/backup/xfusioncorp_ecommerce.zip": No such file or directory
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ sudo apt install zip
 
 		We trust you have received the usual lecture from the local System
 		Administrator. It usually boils down to these three things:
@@ -1016,109 +1107,102 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 			#3) With great power comes great responsibility.
 
 		[sudo] password for tony: 
-		.PING 172.16.238.16 (172.16.238.16) 56(84) bytes of data.
-		64 bytes from 172.16.238.16: icmp_seq=1 ttl=64 time=0.127 ms
-		64 bytes from 172.16.238.16: icmp_seq=2 ttl=64 time=0.070 ms
-		64 bytes from 172.16.238.16: icmp_seq=3 ttl=64 time=0.052 ms
-		64 bytes from 172.16.238.16: icmp_seq=4 ttl=64 time=0.064 ms
-		^C
-		--- 172.16.238.16 ping statistics ---
-		4 packets transmitted, 4 received, 0% packet loss, time 3049ms
-		rtt min/avg/max/mdev = 0.052/0.078/0.127/0.029 ms
-		[tony@stapp01 ~]$ cat /scripts/official_backup.sh
-		#! /bin/bash
-		tar cvzf xfusioncorp_official.zip /var/www/html/official
-		mv xfusioncorp_official.zip /backup/
-		scp /backup/xfusioncorp_official.zip clint@stbkp01:/backup/
+		sudo: apt: command not found
 		[tony@stapp01 ~]$ 
 		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ chmod +x /scripts/official_backup.sh
+		[tony@stapp01 ~]$ cat /etc/os-release 
+		NAME="CentOS Stream"
+		VERSION="9"
+		ID="centos"
+		ID_LIKE="rhel fedora"
+		VERSION_ID="9"
+		PLATFORM_ID="platform:el9"
+		PRETTY_NAME="CentOS Stream 9"
+		ANSI_COLOR="0;31"
+		LOGO="fedora-logo-icon"
+		CPE_NAME="cpe:/o:centos:centos:9"
+		HOME_URL="https://centos.org/"
+		BUG_REPORT_URL="https://issues.redhat.com/"
+		REDHAT_SUPPORT_PRODUCT="Red Hat Enterprise Linux 9"
+		REDHAT_SUPPORT_PRODUCT_VERSION="CentOS Stream"
 		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ ssh-keygen
-		Generating public/private rsa key pair.
-		Enter file in which to save the key (/home/tony/.ssh/id_rsa): 
-		Created directory '/home/tony/.ssh'.
-		Enter passphrase (empty for no passphrase): 
-		Enter same passphrase again: 
-		Your identification has been saved in /home/tony/.ssh/id_rsa.
-		Your public key has been saved in /home/tony/.ssh/id_rsa.pub.
-		The key fingerprint is:
-		SHA256:bV7vq3N7s9TAN1FALGwtpDhav10aMauNpiE6RPHSnqA tony@stapp01.stratos.xfusioncorp.com
-		The key's randomart image is:
-		+---[RSA 2048]----+
-		|           o.+o..|
-		|    .    . .= o .|
-		|     +  + ..oo . |
-		|    + oo +   =  .|
-		|   o +..S + + +..|
-		|  E . o  o B = oo|
-		|   .  . . * + ...|
-		|    .. . +  ..o..|
-		|    ..  .   .++=o|
-		+----[SHA256]-----+
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ ssh-copy-id clint@stbkp01
-		/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/tony/.ssh/id_rsa.pub"
-		The authenticity of host 'stbkp01 (172.16.238.16)' can't be established.
-		ECDSA key fingerprint is SHA256:rZFSbspebX+RHY8dKacYCNxFEcP0kQwPjh+G54CwXOY.
-		ECDSA key fingerprint is MD5:49:e3:31:8f:b9:e8:30:13:17:80:03:40:64:df:fd:44.
-		Are you sure you want to continue connecting (yes/no)? yes
-		/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
-		/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-		clint@stbkp01's password: 
+		[tony@stapp01 ~]$ sudo yum install zip
+		CentOS Stream 9 - BaseOS                        44 kB/s | 7.3 kB     00:00    
+		CentOS Stream 9 - BaseOS                       9.3 MB/s | 8.8 MB     00:00    
+		CentOS Stream 9 - AppStream                     40 kB/s | 7.5 kB     00:00    
+		CentOS Stream 9 - AppStream                     18 MB/s |  25 MB     00:01    
+		CentOS Stream 9 - Extras packages               36 kB/s | 8.0 kB     00:00    
+		CentOS Stream 9 - Extras packages               30 kB/s |  19 kB     00:00    
+		Docker CE Stable - x86_64                       43 kB/s | 3.5 kB     00:00    
+		Docker CE Stable - x86_64                      347 kB/s |  78 kB     00:00    
+		Extra Packages for Enterprise Linux 9 - x86_64 136 kB/s |  36 kB     00:00    
+		Extra Packages for Enterprise Linux 9 - x86_64  21 MB/s |  20 MB     00:00    
+		Extra Packages for Enterprise Linux 9 openh264 3.1 kB/s | 993  B     00:00    
+		Extra Packages for Enterprise Linux 9 - Next - 133 kB/s |  25 kB     00:00    
+		Extra Packages for Enterprise Linux 9 - Next - 353 kB/s | 279 kB     00:00    
+		Dependencies resolved.
+		===============================================================================
+		Package         Architecture     Version               Repository        Size
+		===============================================================================
+		Installing:
+		zip             x86_64           3.0-35.el9            baseos           266 k
+		Installing dependencies:
+		unzip           x86_64           6.0-59.el9            baseos           182 k
 
-		Number of key(s) added: 1
+		Transaction Summary
+		===============================================================================
+		Install  2 Packages
 
-		Now try logging into the machine, with:   "ssh 'clint@stbkp01'"
-		and check to make sure that only the key(s) you wanted were added.
+		Total download size: 447 k
+		Installed size: 1.1 M
+		Is this ok [y/N]: y
+		Downloading Packages:
+		(1/2): unzip-6.0-59.el9.x86_64.rpm             723 kB/s | 182 kB     00:00    
+		(2/2): zip-3.0-35.el9.x86_64.rpm               1.0 MB/s | 266 kB     00:00    
+		-------------------------------------------------------------------------------
+		Total                                          990 kB/s | 447 kB     00:00     
+		Running transaction check
+		Transaction check succeeded.
+		Running transaction test
+		Transaction test succeeded.
+		Running transaction
+		Preparing        :                                                       1/1 
+		Installing       : unzip-6.0-59.el9.x86_64                               1/2 
+		Installing       : zip-3.0-35.el9.x86_64                                 2/2 
+		Running scriptlet: zip-3.0-35.el9.x86_64                                 2/2 
+		Verifying        : unzip-6.0-59.el9.x86_64                               1/2 
+		Verifying        : zip-3.0-35.el9.x86_64                                 2/2 
 
+		Installed:
+		unzip-6.0-59.el9.x86_64                 zip-3.0-35.el9.x86_64                
+
+		Complete!
 		[tony@stapp01 ~]$ 
 		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ ls -la /var/www/html/official
-		total 12
-		drwxr-xr-x 2 root   root   4096 Aug 17 03:02 .
-		drwxr-xr-x 1 apache apache 4096 Aug 17 03:10 ..
-		-rw-r--r-- 1 root   root      0 Aug 17 03:02 .gitkeep
-		-rw-r--r-- 1 root   root     42 Aug 17 03:10 index.html
+		[tony@stapp01 ~]$ /scripts/ecommerce_backup.sh 
+		adding: var/www/html/ecommerce/ (stored 0%)
+		adding: var/www/html/ecommerce/.gitkeep (stored 0%)
+		adding: var/www/html/ecommerce/index.html (stored 0%)
+		xfusioncorp_ecommerce.zip                    100%  623     2.6MB/s   00:00    
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ 
 		[tony@stapp01 ~]$ 
 		[tony@stapp01 ~]$ ls -la /backup/
-		total 8
-		drwxrwxrwx 2 root root 4096 Aug 17 03:10 .
-		drwxr-xr-x 1 root root 4096 Aug 17 03:18 ..
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ pwd
-		/home/tony
-		[tony@stapp01 ~]$ /scripts/official_backup.sh 
-		tar: Removing leading `/' from member names
-		/var/www/html/official/
-		/var/www/html/official/.gitkeep
-		/var/www/html/official/index.html
-		xfusioncorp_official.zip                     100%  224   788.3KB/s   00:00    
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ ls -la /var/www/html/official
-		total 12
-		drwxr-xr-x 2 root   root   4096 Aug 17 03:02 .
-		drwxr-xr-x 1 apache apache 4096 Aug 17 03:10 ..
-		-rw-r--r-- 1 root   root      0 Aug 17 03:02 .gitkeep
-		-rw-r--r-- 1 root   root     42 Aug 17 03:10 index.html
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ ls -la /backup/
-		total 12
-		drwxrwxrwx 2 root root 4096 Aug 17 03:23 .
-		drwxr-xr-x 1 root root 4096 Aug 17 03:18 ..
-		-rw-rw-r-- 1 tony tony  224 Aug 17 03:23 xfusioncorp_official.zip
+		total 28
+		drwxrwxrwx 2 root root  4096 Aug 20 22:46 .
+		drwxr-xr-x 1 root root 20480 Aug 20 22:46 ..
+		-rw-r--r-- 1 tony tony   623 Aug 20 22:46 xfusioncorp_ecommerce.zip
 		[tony@stapp01 ~]$ 
 		[tony@stapp01 ~]$ ssh 'clint@stbkp01'
+		Last login: Wed Aug 20 22:42:46 2025 from 172.16.238.10
 		[clint@stbkp01 ~]$ 
 		[clint@stbkp01 ~]$ ls -la /backup/
-		total 28
-		drwxrwxrwx 2 root  root   4096 Aug 17 03:23 .
-		drwxr-xr-x 1 root  root  20480 Aug 17 03:24 ..
-		-rw-r--r-- 1 clint clint   224 Aug 17 03:23 xfusioncorp_official.zip
+		total 36
+		drwxrwxrwx 2 root  root   4096 Aug 20 22:46 .
+		drwxr-xr-x 1 root  root  28672 Aug 20 22:48 ..
+		-rw-r--r-- 1 clint clint   623 Aug 20 22:46 xfusioncorp_ecommerce.zip
 		[clint@stbkp01 ~]$ 
-		[clint@stbkp01 ~]$ 	
+		[clint@stbkp01 ~]$ 
 
 
 <h3></h3>

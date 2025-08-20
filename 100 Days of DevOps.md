@@ -25,7 +25,6 @@ https://docs.github.com/en/get-started/writing-on-github/getting-started-with-wr
 	[banner@stapp03 ~]$ 
 
 <h3>Day 2: Temporary User Setup with Expiry</h3>
-
 As part of the temporary assignment to the Nautilus project, a developer named rose requires access for a limited duration. To ensure smooth access management, a temporary user account with an expiry date is needed. 
 Here's what you need to do: Create a user named rose on App Server 1 in Stratos Datacenter. Set the expiry date to 2024-04-15, ensuring the user is created in lowercase as per standard protocol.
 	
@@ -61,8 +60,8 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 		[tony@stapp01 ~]$ 
 		
 <h3>Day 3: Secure Root SSH Access</h3>
-	Following security audits, the xFusionCorp Industries security team has rolled out new protocols, including the restriction of direct root SSH login.
-	Your task is to disable direct SSH root login on all app servers within the Stratos Datacenter.
+Following security audits, the xFusionCorp Industries security team has rolled out new protocols, including the restriction of direct root SSH login.
+Your task is to disable direct SSH root login on all app servers within the Stratos Datacenter.
 					
 		thor@jumphost ~$ ssh tony@stapp01
 		The authenticity of host 'stapp01 (172.16.238.10)' can't be established.
@@ -128,9 +127,9 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 
 
 <h3>Day 4: Script Execution Permissions</h3>
-	In a bid to automate backup processes, the xFusionCorp Industries sysadmin team has developed a new bash script named xfusioncorp.sh. While the script has been distributed to all necessary servers, it lacks executable permissions on App Server 2 within the Stratos Datacenter.
+In a bid to automate backup processes, the xFusionCorp Industries sysadmin team has developed a new bash script named xfusioncorp.sh. While the script has been distributed to all necessary servers, it lacks executable permissions on App Server 2 within the Stratos Datacenter.
 
-	Your task is to grant executable permissions to the /tmp/xfusioncorp.sh script on App Server 2. Additionally, ensure that all users have the capability to execute it.
+Your task is to grant executable permissions to the /tmp/xfusioncorp.sh script on App Server 2. Additionally, ensure that all users have the capability to execute it.
 
 		thor@jumphost ~$ ssh banner@stapp03
 		The authenticity of host 'stapp03 (172.16.238.12)' can't be established.
@@ -161,13 +160,13 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 
 
 <h3>Day 5: SElinux Installation and Configuration</h3>
-	Following a security audit, the xFusionCorp Industries security team has opted to enhance application and server security with SELinux. To initiate testing, the following requirements have been established for App server 1 in the Stratos Datacenter:
+Following a security audit, the xFusionCorp Industries security team has opted to enhance application and server security with SELinux. To initiate testing, the following requirements have been established for App server 1 in the Stratos Datacenter:
 
-	Install the required SELinux packages.
-	Permanently disable SELinux for the time being; it will be re-enabled after necessary configuration changes.
-	No need to reboot the server, as a scheduled maintenance reboot is already planned for tonight.
+Install the required SELinux packages.
+Permanently disable SELinux for the time being; it will be re-enabled after necessary configuration changes.
+No need to reboot the server, as a scheduled maintenance reboot is already planned for tonight.
 
-	Disregard the current status of SELinux via the command line; the final status after the reboot should be disabled.
+Disregard the current status of SELinux via the command line; the final status after the reboot should be disabled.
 
 		thor@jumphost ~$ ssh tony@stapp01
 		The authenticity of host 'stapp01 (172.16.238.10)' can't be established.
@@ -359,8 +358,7 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 		[tony@stapp01 ~]$ 
 
 <h3>Day 6: Create a Cron Job</h3>
-	The Nautilus system admins team has prepared scripts to automate several day-to-day tasks. They want them to be deployed on all app servers in Stratos DC on a set schedule. Before that they need to test similar functionality with a sample cron job. Therefore, perform the steps below:
-
+The Nautilus system admins team has prepared scripts to automate several day-to-day tasks. They want them to be deployed on all app servers in Stratos DC on a set schedule. Before that they need to test similar functionality with a sample cron job. Therefore, perform the steps below:
 	a. Install cronie package on all Nautilus app servers and start crond service.
 	b. Add a cron */5 * * * * echo hello > /tmp/cron_text for root user.		
 
@@ -611,9 +609,9 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 
 
 <h3>Day 7: Linux SSH Authentication</h3>
-	The system admins team of xFusionCorp Industries has set up some scripts on jump host that run on regular intervals and perform operations on all app servers in Stratos Datacenter. To make these scripts work properly we need to make sure the thor user on jump host has password-less SSH access to all app servers through their respective sudo users (i.e tony for app server 1). Based on the requirements, perform the following:
+The system admins team of xFusionCorp Industries has set up some scripts on jump host that run on regular intervals and perform operations on all app servers in Stratos Datacenter. To make these scripts work properly we need to make sure the thor user on jump host has password-less SSH access to all app servers through their respective sudo users (i.e tony for app server 1). Based on the requirements, perform the following:
 
-	Set up a password-less authentication from user thor on jump host to all app servers through their respective sudo users.
+Set up a password-less authentication from user thor on jump host to all app servers through their respective sudo users.
 
 	thor@jumphost ~$ id
 	uid=1000(thor) gid=1000(thor) groups=1000(thor),10(wheel)
@@ -716,9 +714,9 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 
 
 <h3>Day 8: Install Ansible</h3>	
-	During the weekly meeting, the Nautilus DevOps team discussed about the automation and configuration management solutions that they want to implement. While considering several options, the team has decided to go with Ansible for now due to its simple setup and minimal pre-requisites. The team wanted to start testing using Ansible, so they have decided to use jump host as an Ansible controller to test different kind of tasks on rest of the servers.
+During the weekly meeting, the Nautilus DevOps team discussed about the automation and configuration management solutions that they want to implement. While considering several options, the team has decided to go with Ansible for now due to its simple setup and minimal pre-requisites. The team wanted to start testing using Ansible, so they have decided to use jump host as an Ansible controller to test different kind of tasks on rest of the servers.
 
-	Install ansible version 4.9.0 on Jump host using pip3 only. Make sure Ansible binary is available globally on this system, i.e all users on this system are able to run Ansible commands.
+Install ansible version 4.9.0 on Jump host using pip3 only. Make sure Ansible binary is available globally on this system, i.e all users on this system are able to run Ansible commands.
 
 	thor@jumphost ~$ cat /etc/os-release
 	NAME="CentOS Stream"
@@ -842,9 +840,9 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 
 
 <h3>Day 9: MariaDB Troubleshooting</h3>
-	There is a critical issue going on with the Nautilus application in Stratos DC. The production support team identified that the application is unable to connect to the database. After digging into the issue, the team found that mariadb service is down on the database server.
+There is a critical issue going on with the Nautilus application in Stratos DC. The production support team identified that the application is unable to connect to the database. After digging into the issue, the team found that mariadb service is down on the database server.
 
-	Look into the issue and fix the same.
+Look into the issue and fix the same.
 
 	thor@jumphost ~$ ssh peter@stdb01
 	The authenticity of host 'stdb01 (172.16.239.10)' can't be established.
@@ -986,7 +984,7 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 
 
 <h3>Day 10: Linux Bash Scripts</h3>
-	The production support team of xFusionCorp Industries is working on developing some bash scripts to automate different day to day tasks. One is to create a bash script for taking websites backup. They have a static website running on App Server 1 in Stratos Datacenter, and they need to create a bash script named ecommerce_backup.sh which should accomplish the following tasks. (Also remember to place the script under /scripts directory on App Server 1).
+The production support team of xFusionCorp Industries is working on developing some bash scripts to automate different day to day tasks. One is to create a bash script for taking websites backup. They have a static website running on App Server 1 in Stratos Datacenter, and they need to create a bash script named ecommerce_backup.sh which should accomplish the following tasks. (Also remember to place the script under /scripts directory on App Server 1).
 	a. Create a zip archive named xfusioncorp_ecommerce.zip of /var/www/html/ecommerce directory.
 	b. Save the archive in /backup/ on App Server 1. This is a temporary storage, as backups from this location will be clean on weekly basis. Therefore, we also need to save this backup archive on Nautilus Backup Server.
 	c. Copy the created archive to Nautilus Backup Server server in /backup/ location.
@@ -1205,7 +1203,15 @@ Here's what you need to do: Create a user named rose on App Server 1 in Stratos 
 		[clint@stbkp01 ~]$ 
 
 
-<h3></h3>
+<h3>Day 11: Install and Configure Tomcat Server</h3>
+The Nautilus application development team recently finished the beta version of one of their Java-based applications, which they are planning to deploy on one of the app servers in Stratos DC. After an internal team meeting, they have decided to use the tomcat application server. Based on the requirements mentioned below complete the task:
+
+	a. Install tomcat server on App Server 1.
+	b. Configure it to run on port 3000.
+	c. There is a ROOT.war file on Jump host at location /tmp.
+
+	Deploy it on this tomcat server and make sure the webpage works directly on base URL i.e curl http://stapp01:3000
+
 
 
 <h3></h3>

@@ -1205,12 +1205,65 @@ The Nautilus application development team recently finished the beta version of 
 
 	Deploy it on this tomcat server and make sure the webpage works directly on base URL i.e curl http://stapp01:3000
 
-		thor@jumphost ~$ sudo pip3 install ansible
 		thor@jumphost ~$ ansible --version
-		thor@jumphost ~$ vi inteventory.ini
+		bash: ansible: command not found
 		thor@jumphost ~$ 
-		thor@jumphost ~$ cat inteventory.ini 
+		thor@jumphost ~$ pip3 install ansible
+		Defaulting to user installation because normal site-packages is not writeable
+		Collecting ansible
+		Downloading ansible-8.7.0-py3-none-any.whl.metadata (7.9 kB)
+		Collecting ansible-core~=2.15.7 (from ansible)
+		Downloading ansible_core-2.15.13-py3-none-any.whl.metadata (7.0 kB)
+		Collecting jinja2>=3.0.0 (from ansible-core~=2.15.7->ansible)
+		Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+		Requirement already satisfied: PyYAML>=5.1 in /usr/lib64/python3.9/site-packages (from ansible-core~=2.15.7->ansible) (5.4.1)
+		Requirement already satisfied: cryptography in /usr/lib64/python3.9/site-packages (from ansible-core~=2.15.7->ansible) (36.0.1)
+		Collecting packaging (from ansible-core~=2.15.7->ansible)
+		Downloading packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+		Collecting resolvelib<1.1.0,>=0.5.3 (from ansible-core~=2.15.7->ansible)
+		Downloading resolvelib-1.0.1-py2.py3-none-any.whl.metadata (4.0 kB)
+		Collecting importlib-resources<5.1,>=5.0 (from ansible-core~=2.15.7->ansible)
+		Downloading importlib_resources-5.0.7-py3-none-any.whl.metadata (2.8 kB)
+		Collecting MarkupSafe>=2.0 (from jinja2>=3.0.0->ansible-core~=2.15.7->ansible)
+		Downloading MarkupSafe-3.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.0 kB)
+		Requirement already satisfied: cffi>=1.12 in /usr/lib64/python3.9/site-packages (from cryptography->ansible-core~=2.15.7->ansible) (1.14.5)
+		Requirement already satisfied: pycparser in /usr/lib/python3.9/site-packages (from cffi>=1.12->cryptography->ansible-core~=2.15.7->ansible) (2.20)
+		Requirement already satisfied: ply==3.11 in /usr/lib/python3.9/site-packages (from pycparser->cffi>=1.12->cryptography->ansible-core~=2.15.7->ansible) (3.11)
+		Downloading ansible-8.7.0-py3-none-any.whl (48.4 MB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.4/48.4 MB 48.4 MB/s eta 0:00:00
+		Downloading ansible_core-2.15.13-py3-none-any.whl (2.3 MB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 83.7 MB/s eta 0:00:00
+		Downloading importlib_resources-5.0.7-py3-none-any.whl (24 kB)
+		Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 29.2 MB/s eta 0:00:00
+		Downloading resolvelib-1.0.1-py2.py3-none-any.whl (17 kB)
+		Downloading packaging-25.0-py3-none-any.whl (66 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.5/66.5 kB 11.2 MB/s eta 0:00:00
+		Downloading MarkupSafe-3.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (20 kB)
+		Installing collected packages: resolvelib, packaging, MarkupSafe, importlib-resources, jinja2, ansible-core, ansible
+		Successfully installed MarkupSafe-3.0.2 ansible-8.7.0 ansible-core-2.15.13 importlib-resources-5.0.7 jinja2-3.1.6 packaging-25.0 resolvelib-1.0.1
+
+		[notice] A new release of pip is available: 24.0 -> 25.2
+		[notice] To update, run: python3 -m pip install --upgrade pip
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ ansible --version
+		ansible [core 2.15.13]
+		config file = None
+		configured module search path = ['/home/thor/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+		ansible python module location = /home/thor/.local/lib/python3.9/site-packages/ansible
+		ansible collection location = /home/thor/.ansible/collections:/usr/share/ansible/collections
+		executable location = /home/thor/.local/bin/ansible
+		python version = 3.9.18 (main, Jan 24 2024, 00:00:00) [GCC 11.4.1 20231218 (Red Hat 11.4.1-3)] (/usr/bin/python3)
+		jinja version = 3.1.6
+		libyaml = True
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ vi inventory.ini
+		thor@jumphost ~$ 
+		thor@jumphost ~$ cat inventory.ini 
 		stapp01 ansible_host=stapp01 ansible_user=tony ansible_connection=ssh ansible_port=22 ansible_ssh_pass=Ir0nM@n
+		thor@jumphost ~$ 
 		thor@jumphost ~$ ssh-keygen
 		Generating public/private rsa key pair.
 		Enter file in which to save the key (/home/thor/.ssh/id_rsa): 
@@ -1219,22 +1272,26 @@ The Nautilus application development team recently finished the beta version of 
 		Your identification has been saved in /home/thor/.ssh/id_rsa
 		Your public key has been saved in /home/thor/.ssh/id_rsa.pub
 		The key fingerprint is:
-		SHA256:7kSckaJw3LRMuVlKcOdW0sfQeqtwlC4t3YeM9FrewWE thor@jumphost.stratos.xfusioncorp.com
+		SHA256:ge510TrVmrQrXM5IpT3pBhEEWFs2b1OAhaDZBTjuD5U thor@jumphost.stratos.xfusioncorp.com
 		The key's randomart image is:
 		+---[RSA 3072]----+
-		|    ..+.o.o+     |
-		|   . *o+.+. +    |
-		|  . o.===  +     |
-		|   o .++ o= . E  |
-		|    .   S* * = . |
-		|       o+ * B +  |
-		|        o= = o . |
-		|       o  o . .  |
-		|        .        |
+		|       +==B+o..  |
+		|      += =o= o   |
+		|     .+.+.o O .  |
+		|     .. E. @ *   |
+		|     ...S B O    |
+		|     .o. + O o   |
+		|      .o  + *    |
+		|        .  o     |
+		|                 |
 		+----[SHA256]-----+
 		thor@jumphost ~$ 
 		thor@jumphost ~$ ssh-copy-id tony@stapp01
 		/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/thor/.ssh/id_rsa.pub"
+		The authenticity of host 'stapp01 (172.16.238.10)' can't be established.
+		ED25519 key fingerprint is SHA256:k2V5SFOpHz/nE147zcvXpb6AaZR/cwaPuLUcOjPk8M4.
+		This key is not known by any other names
+		Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 		/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
 		/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
 		tony@stapp01's password: 
@@ -1245,12 +1302,121 @@ The Nautilus application development team recently finished the beta version of 
 		and check to make sure that only the key(s) you wanted were added.
 
 		thor@jumphost ~$ 
-		thor@jumphost ~$ ssh ^C
 		thor@jumphost ~$ ssh tony@stapp01
-		Last login: Wed Aug 20 22:59:37 2025 from 172.16.238.3
 		[tony@stapp01 ~]$ 
 		[tony@stapp01 ~]$ logout
 		Connection to stapp01 closed.
+		thor@jumphost ~$ 
+		thor@jumphost ~$ vi playbook.yaml
+		thor@jumphost ~$ cat playbook.yaml 
+		---
+		- name: Deploy Nautilus beta Java app on Tomcat
+		hosts: stapp01
+		become: yes
+		tasks:
+			- name: Install Tomcat and required packages
+			dnf:
+				name:
+				- tomcat
+				- tomcat-webapps
+				- tomcat-admin-webapps
+				state: present
+
+			- name: Change tomcat port to 8087 in server.xml
+			ansible.builtin.replace:
+				path: /etc/tomcat/server.xml
+				regexp: 'port="8080"'
+				replace: 'port="8087"'
+
+			- name: Remove old extracted ROOT app folder
+			ansible.builtin.file:
+				path: /var/lib/tomcat/webapps/ROOT
+				state: absent
+
+			- name: Copy ROOT.war from jump host to App Server 1
+			ansible.builtin.copy:
+				src: /tmp/ROOT.war
+				dest: /var/lib/tomcat/webapps/ROOT.war
+				mode: '0644'
+
+			- name: Enable and start Tomcat service
+			ansible.builtin.systemd:
+				name: tomcat
+				enabled: yes
+				state: restarted
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ ansible-playbook playbook.yaml -i inventory.ini 
+
+		PLAY [Deploy Nautilus beta Java app on Tomcat] *******************************************
+
+		TASK [Gathering Facts] *******************************************************************
+		fatal: [stapp01]: FAILED! => {"msg": "Missing sudo password"}
+
+		PLAY RECAP *******************************************************************************
+		stapp01                    : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
+		thor@jumphost ~$ 
+		thor@jumphost ~$ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook.yaml
+
+		PLAY [Deploy Nautilus beta Java app on Tomcat] *******************************************
+
+		TASK [Gathering Facts] *******************************************************************
+		fatal: [stapp01]: FAILED! => {"msg": "Missing sudo password"}
+
+		PLAY RECAP *******************************************************************************
+		stapp01                    : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
+		thor@jumphost ~$ vi inventory.ini 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook.yaml
+
+		PLAY [Deploy Nautilus beta Java app on Tomcat] *******************************************
+
+		TASK [Gathering Facts] *******************************************************************
+		ok: [stapp01]
+
+		TASK [Install Tomcat and required packages] **********************************************
+		changed: [stapp01]
+
+		TASK [Change tomcat port to 8087 in server.xml] ******************************************
+		changed: [stapp01]
+
+		TASK [Remove old extracted ROOT app folder] **********************************************
+		changed: [stapp01]
+
+		TASK [Copy ROOT.war from jump host to App Server 1] **************************************
+		changed: [stapp01]
+
+		TASK [Enable and start Tomcat service] ***************************************************
+		changed: [stapp01]
+
+		PLAY RECAP *******************************************************************************
+		stapp01                    : ok=6    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ curl http://stapp01:6300
+		curl: (7) Failed to connect to stapp01 port 6300: Connection refused
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ curl -k http://stapp01:6300
+		curl: (7) Failed to connect to stapp01 port 6300: Connection refused
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ ssh tony@stapp01
+		Last login: Thu Aug 21 13:59:06 2025 from 172.16.238.3
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ curl http://stapp01:6300
+		curl: (7) Failed to connect to stapp01 port 6300: Connection refused
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ logout
+		Connection to stapp01 closed.
+		thor@jumphost ~$ 
+		thor@jumphost ~$ cat inventory.ini 
+		stapp01 ansible_user=tony ansible_ssh_pass=Ir0nM@n ansible_become_pass=Ir0nM@n
 		thor@jumphost ~$ 
 
 

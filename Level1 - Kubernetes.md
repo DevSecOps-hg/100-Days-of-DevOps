@@ -237,6 +237,78 @@ Note: The kubectl utility on jump_host is configured to interact with the Kubern
 
 
 <h3>12 Update Deployment and Service in Kubernetes</h3>
+An application deployed on the Kubernetes cluster requires an update with new features developed by the Nautilus application development team. The existing setup includes a deployment named nginx-deployment and a service named nginx-service. Below are the necessary changes to be implemented without deleting the deployment and service:
+1.) Modify the service nodeport from 30008 to 32165
+2.) Change the replicas count from 1 to 5
+3.) Update the image from nginx:1.19 to nginx:latest
+Note: The kubectl utility on jump_host is configured to operate with the Kubernetes cluster.
+
+	thor@jumphost ~$ k get all
+	NAME                                   READY   STATUS    RESTARTS   AGE
+	pod/nginx-deployment-dc49f85cc-gbnzv   1/1     Running   0          53s
+
+	NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+	service/kubernetes      ClusterIP   10.96.0.1      <none>        443/TCP        4m
+	service/nginx-service   NodePort    10.96.122.39   <none>        80:30008/TCP   53s
+
+	NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+	deployment.apps/nginx-deployment   1/1     1            1           53s
+
+	NAME                                         DESIRED   CURRENT   READY   AGE
+	replicaset.apps/nginx-deployment-dc49f85cc   1         1         1       53s
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k edit deployments.apps nginx-deployment 
+	deployment.apps/nginx-deployment edited
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k get deployments.apps -w
+	NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+	nginx-deployment   4/5     3            4           2m29s
+	nginx-deployment   5/5     3            5           2m33s
+	nginx-deployment   5/5     3            5           2m33s
+	nginx-deployment   4/5     3            4           2m33s
+	nginx-deployment   4/5     4            4           2m33s
+	nginx-deployment   5/5     4            5           2m34s
+	nginx-deployment   6/5     4            6           2m34s
+	nginx-deployment   6/5     4            6           2m35s
+	nginx-deployment   5/5     5            5           2m35s
+	nginx-deployment   4/5     5            4           2m35s
+	nginx-deployment   5/5     5            5           2m36s
+	nginx-deployment   5/5     5            5           2m36s
+	nginx-deployment   4/5     5            4           2m36s
+	nginx-deployment   5/5     5            5           2m37s
+	^Cthor@jumphost ~$ 
+	thor@jumphost ~$ k get all
+	NAME                                    READY   STATUS    RESTARTS   AGE
+	pod/nginx-deployment-854ff588b7-57xn2   1/1     Running   0          15s
+	pod/nginx-deployment-854ff588b7-csmlx   1/1     Running   0          16s
+	pod/nginx-deployment-854ff588b7-pk8zr   1/1     Running   0          28s
+	pod/nginx-deployment-854ff588b7-qxhvn   1/1     Running   0          28s
+	pod/nginx-deployment-854ff588b7-shtvn   1/1     Running   0          28s
+
+	NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+	service/kubernetes      ClusterIP   10.96.0.1      <none>        443/TCP        5m56s
+	service/nginx-service   NodePort    10.96.122.39   <none>        80:30008/TCP   2m49s
+
+	NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+	deployment.apps/nginx-deployment   5/5     5            5           2m49s
+
+	NAME                                          DESIRED   CURRENT   READY   AGE
+	replicaset.apps/nginx-deployment-854ff588b7   5         5         5       28s
+	replicaset.apps/nginx-deployment-dc49f85cc    0         0         0       2m49s
+	thor@jumphost ~$ 
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k edit svc 
+	kubernetes     nginx-service  
+	thor@jumphost ~$ k edit svc nginx-service 
+	service/nginx-service edited
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k get svc -w
+	NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+	kubernetes      ClusterIP   10.96.0.1      <none>        443/TCP        6m33s
+	nginx-service   NodePort    10.96.122.39   <none>        80:32165/TCP   3m26s
+
+	^Cthor@jumphost ~$ 
+
 
 <h3>13 Deploy Highly Available Pods with ReplicationController</h3>
 

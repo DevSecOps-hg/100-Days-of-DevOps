@@ -1199,17 +1199,25 @@ The production support team of xFusionCorp Industries is working on developing s
 
 <h3>Day 11: Install and Configure Tomcat Server</h3>
 The Nautilus application development team recently finished the beta version of one of their Java-based applications, which they are planning to deploy on one of the app servers in Stratos DC. After an internal team meeting, they have decided to use the tomcat application server. Based on the requirements mentioned below complete the task:
-	a. Install tomcat server on App Server 1.
-	b. Configure it to run on port 3000.
+	a. Install tomcat server on App Server 3.
+	b. Configure it to run on port 8083.
 	c. There is a ROOT.war file on Jump host at location /tmp.
 
-	Deploy it on this tomcat server and make sure the webpage works directly on base URL i.e curl http://stapp01:3000
+	Deploy it on this tomcat server and make sure the webpage works directly on base URL i.e curl http://stapp03:8083
+
 
 		thor@jumphost ~$ ansible --version
 		bash: ansible: command not found
-		thor@jumphost ~$ 
-		thor@jumphost ~$ pip3 install ansible
-		Defaulting to user installation because normal site-packages is not writeable
+		thor@jumphost ~$ sudo pip3 install ansible
+
+		We trust you have received the usual lecture from the local System
+		Administrator. It usually boils down to these three things:
+
+			#1) Respect the privacy of others.
+			#2) Think before you type.
+			#3) With great power comes great responsibility.
+
+		[sudo] password for thor: 
 		Collecting ansible
 		Downloading ansible-8.7.0-py3-none-any.whl.metadata (7.9 kB)
 		Collecting ansible-core~=2.15.7 (from ansible)
@@ -1230,30 +1238,35 @@ The Nautilus application development team recently finished the beta version of 
 		Requirement already satisfied: pycparser in /usr/lib/python3.9/site-packages (from cffi>=1.12->cryptography->ansible-core~=2.15.7->ansible) (2.20)
 		Requirement already satisfied: ply==3.11 in /usr/lib/python3.9/site-packages (from pycparser->cffi>=1.12->cryptography->ansible-core~=2.15.7->ansible) (3.11)
 		Downloading ansible-8.7.0-py3-none-any.whl (48.4 MB)
-		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.4/48.4 MB 48.4 MB/s eta 0:00:00
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 48.4/48.4 MB 48.5 MB/s eta 0:00:00
 		Downloading ansible_core-2.15.13-py3-none-any.whl (2.3 MB)
-		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 83.7 MB/s eta 0:00:00
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 91.8 MB/s eta 0:00:00
 		Downloading importlib_resources-5.0.7-py3-none-any.whl (24 kB)
 		Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
-		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 29.2 MB/s eta 0:00:00
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 15.0 MB/s eta 0:00:00
 		Downloading resolvelib-1.0.1-py2.py3-none-any.whl (17 kB)
 		Downloading packaging-25.0-py3-none-any.whl (66 kB)
-		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.5/66.5 kB 11.2 MB/s eta 0:00:00
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 66.5/66.5 kB 16.7 MB/s eta 0:00:00
 		Downloading MarkupSafe-3.0.2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (20 kB)
 		Installing collected packages: resolvelib, packaging, MarkupSafe, importlib-resources, jinja2, ansible-core, ansible
+		WARNING: The scripts ansible, ansible-config, ansible-connection, ansible-console, ansible-doc, ansible-galaxy, ansible-inventory, ansible-playbook, ansible-pull and ansible-vault are installed in '/usr/local/bin' which is not on PATH.
+		Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+		WARNING: The script ansible-community is installed in '/usr/local/bin' which is not on PATH.
+		Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
 		Successfully installed MarkupSafe-3.0.2 ansible-8.7.0 ansible-core-2.15.13 importlib-resources-5.0.7 jinja2-3.1.6 packaging-25.0 resolvelib-1.0.1
+		WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
 
 		[notice] A new release of pip is available: 24.0 -> 25.2
-		[notice] To update, run: python3 -m pip install --upgrade pip
+		[notice] To update, run: pip install --upgrade pip
 		thor@jumphost ~$ 
 		thor@jumphost ~$ 
 		thor@jumphost ~$ ansible --version
 		ansible [core 2.15.13]
 		config file = None
 		configured module search path = ['/home/thor/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
-		ansible python module location = /home/thor/.local/lib/python3.9/site-packages/ansible
+		ansible python module location = /usr/local/lib/python3.9/site-packages/ansible
 		ansible collection location = /home/thor/.ansible/collections:/usr/share/ansible/collections
-		executable location = /home/thor/.local/bin/ansible
+		executable location = /usr/local/bin/ansible
 		python version = 3.9.18 (main, Jan 24 2024, 00:00:00) [GCC 11.4.1 20231218 (Red Hat 11.4.1-3)] (/usr/bin/python3)
 		jinja version = 3.1.6
 		libyaml = True
@@ -1262,162 +1275,279 @@ The Nautilus application development team recently finished the beta version of 
 		thor@jumphost ~$ vi inventory.ini
 		thor@jumphost ~$ 
 		thor@jumphost ~$ cat inventory.ini 
-		stapp01 ansible_host=stapp01 ansible_user=tony ansible_connection=ssh ansible_port=22 ansible_ssh_pass=Ir0nM@n
+		stapp03 ansible_user=banner ansible_ssh_pass=BigGr33n ansible_become_pass=BigGr33n
 		thor@jumphost ~$ 
-		thor@jumphost ~$ ssh-keygen
-		Generating public/private rsa key pair.
-		Enter file in which to save the key (/home/thor/.ssh/id_rsa): 
-		Enter passphrase (empty for no passphrase): 
-		Enter same passphrase again: 
-		Your identification has been saved in /home/thor/.ssh/id_rsa
-		Your public key has been saved in /home/thor/.ssh/id_rsa.pub
-		The key fingerprint is:
-		SHA256:ge510TrVmrQrXM5IpT3pBhEEWFs2b1OAhaDZBTjuD5U thor@jumphost.stratos.xfusioncorp.com
-		The key's randomart image is:
-		+---[RSA 3072]----+
-		|       +==B+o..  |
-		|      += =o= o   |
-		|     .+.+.o O .  |
-		|     .. E. @ *   |
-		|     ...S B O    |
-		|     .o. + O o   |
-		|      .o  + *    |
-		|        .  o     |
-		|                 |
-		+----[SHA256]-----+
-		thor@jumphost ~$ 
-		thor@jumphost ~$ ssh-copy-id tony@stapp01
-		/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/thor/.ssh/id_rsa.pub"
-		The authenticity of host 'stapp01 (172.16.238.10)' can't be established.
-		ED25519 key fingerprint is SHA256:k2V5SFOpHz/nE147zcvXpb6AaZR/cwaPuLUcOjPk8M4.
-		This key is not known by any other names
-		Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-		/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
-		/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-		tony@stapp01's password: 
-
-		Number of key(s) added: 1
-
-		Now try logging into the machine, with:   "ssh 'tony@stapp01'"
-		and check to make sure that only the key(s) you wanted were added.
-
-		thor@jumphost ~$ 
-		thor@jumphost ~$ ssh tony@stapp01
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ logout
-		Connection to stapp01 closed.
 		thor@jumphost ~$ 
 		thor@jumphost ~$ vi playbook.yaml
+		thor@jumphost ~$ 
 		thor@jumphost ~$ cat playbook.yaml 
 		---
 		- name: Deploy Nautilus beta Java app on Tomcat
-		hosts: stapp01
+		hosts: stapp03
 		become: yes
 		tasks:
 			- name: Install Tomcat and required packages
-			dnf:
+			  dnf:
 				name:
 				- tomcat
 				- tomcat-webapps
 				- tomcat-admin-webapps
 				state: present
 
-			- name: Change tomcat port to 8087 in server.xml
-			ansible.builtin.replace:
+			- name: Change tomcat port in server.xml
+			  ansible.builtin.replace:
 				path: /etc/tomcat/server.xml
 				regexp: 'port="8080"'
-				replace: 'port="8087"'
+				replace: 'port="8083"'
 
 			- name: Remove old extracted ROOT app folder
-			ansible.builtin.file:
+			  ansible.builtin.file:
 				path: /var/lib/tomcat/webapps/ROOT
 				state: absent
 
-			- name: Copy ROOT.war from jump host to App Server 1
-			ansible.builtin.copy:
+			- name: Copy ROOT.war from jump host to App Server 3
+			  ansible.builtin.copy:
 				src: /tmp/ROOT.war
 				dest: /var/lib/tomcat/webapps/ROOT.war
 				mode: '0644'
 
 			- name: Enable and start Tomcat service
-			ansible.builtin.systemd:
+			  ansible.builtin.systemd:
 				name: tomcat
 				enabled: yes
 				state: restarted
 		thor@jumphost ~$ 
 		thor@jumphost ~$ 
-		thor@jumphost ~$ ansible-playbook playbook.yaml -i inventory.ini 
+		thor@jumphost ~$ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook.yaml
+		ERROR! We were unable to read either as JSON nor YAML, these are the errors we got from each:
+		JSON: Expecting value: line 1 column 1 (char 0)
 
-		PLAY [Deploy Nautilus beta Java app on Tomcat] *******************************************
+		Syntax Error while loading YAML.
+		could not find expected ':'
 
-		TASK [Gathering Facts] *******************************************************************
-		fatal: [stapp01]: FAILED! => {"msg": "Missing sudo password"}
+		The error appears to be in '/home/thor/playbook.yaml': line 27, column 12, but may
+		be elsewhere in the file depending on the exact syntax problem.
 
-		PLAY RECAP *******************************************************************************
-		stapp01                    : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+		The offending line appears to be:
 
+			ansible.builtin.copy
+				src: /tmp/ROOT.war
+				^ here		
+		
+		
+		thor@jumphost ~$ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook.yaml
+		ERROR! We were unable to read either as JSON nor YAML, these are the errors we got from each:
+		JSON: Expecting value: line 1 column 1 (char 0)
+
+		Syntax Error while loading YAML.
+		found character that cannot start any token
+
+		The error appears to be in '/home/thor/playbook.yaml': line 26, column 1, but may
+		be elsewhere in the file depending on the exact syntax problem.
+
+		The offending line appears to be:
+
+			ansible.builtin.copy:
+				src: /tmp/ROOT.war
+		^ here
+		There appears to be a tab character at the start of the line.
+
+		YAML does not use tabs for formatting. Tabs should be replaced with spaces.
+
+		For example:
+			- name: update tooling
+			vars:
+				version: 1.2.3
+		#    ^--- there is a tab there.
+
+		Should be written as:
+			- name: update tooling
+			vars:
+				version: 1.2.3
+		# ^--- all spaces here.
+		thor@jumphost ~$ ansible-lint playbook.yaml 
+		bash: ansible-lint: command not found
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ pip3 install ansible-lint
+		Defaulting to user installation because normal site-packages is not writeable
+		Collecting ansible-lint
+		Downloading ansible_lint-6.22.2-py3-none-any.whl.metadata (7.4 kB)
+		Requirement already satisfied: ansible-core>=2.12.0 in /usr/local/lib/python3.9/site-packages (from ansible-lint) (2.15.13)
+		Collecting ansible-compat>=4.1.11 (from ansible-lint)
+		Downloading ansible_compat-24.10.0-py3-none-any.whl.metadata (4.0 kB)
+		Collecting black>=22.8.0 (from ansible-lint)
+		Downloading black-25.1.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl.metadata (81 kB)
+			━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 81.3/81.3 kB 3.9 MB/s eta 0:00:00
+		Collecting filelock>=3.3.0 (from ansible-lint)
+		Downloading filelock-3.19.1-py3-none-any.whl.metadata (2.1 kB)
+		Collecting jsonschema>=4.10.0 (from ansible-lint)
+		Downloading jsonschema-4.25.1-py3-none-any.whl.metadata (7.6 kB)
+		Requirement already satisfied: packaging>=21.3 in /usr/local/lib/python3.9/site-packages (from ansible-lint) (25.0)
+		Collecting pathspec>=0.10.3 (from ansible-lint)
+		Downloading pathspec-0.12.1-py3-none-any.whl.metadata (21 kB)
+		Requirement already satisfied: pyyaml>=5.4.1 in /usr/lib64/python3.9/site-packages (from ansible-lint) (5.4.1)
+		Collecting rich>=12.0.0 (from ansible-lint)
+		Downloading rich-14.1.0-py3-none-any.whl.metadata (18 kB)
+		Collecting ruamel.yaml>=0.18.5 (from ansible-lint)
+		Downloading ruamel.yaml-0.18.15-py3-none-any.whl.metadata (25 kB)
+		Collecting subprocess-tee>=0.4.1 (from ansible-lint)
+		Downloading subprocess_tee-0.4.2-py3-none-any.whl.metadata (3.3 kB)
+		Collecting yamllint>=1.30.0 (from ansible-lint)
+		Downloading yamllint-1.37.1-py3-none-any.whl.metadata (4.3 kB)
+		Collecting wcmatch>=8.1.2 (from ansible-lint)
+		Downloading wcmatch-10.1-py3-none-any.whl.metadata (5.1 kB)
+		Collecting typing-extensions>=4.5.0 (from ansible-compat>=4.1.11->ansible-lint)
+		Downloading typing_extensions-4.14.1-py3-none-any.whl.metadata (3.0 kB)
+		Requirement already satisfied: jinja2>=3.0.0 in /usr/local/lib/python3.9/site-packages (from ansible-core>=2.12.0->ansible-lint) (3.1.6)
+		Requirement already satisfied: cryptography in /usr/lib64/python3.9/site-packages (from ansible-core>=2.12.0->ansible-lint) (36.0.1)
+		Requirement already satisfied: resolvelib<1.1.0,>=0.5.3 in /usr/local/lib/python3.9/site-packages (from ansible-core>=2.12.0->ansible-lint) (1.0.1)
+		Requirement already satisfied: importlib-resources<5.1,>=5.0 in /usr/local/lib/python3.9/site-packages (from ansible-core>=2.12.0->ansible-lint) (5.0.7)
+		Collecting click>=8.0.0 (from black>=22.8.0->ansible-lint)
+		Downloading click-8.1.8-py3-none-any.whl.metadata (2.3 kB)
+		Collecting mypy-extensions>=0.4.3 (from black>=22.8.0->ansible-lint)
+		Downloading mypy_extensions-1.1.0-py3-none-any.whl.metadata (1.1 kB)
+		Collecting platformdirs>=2 (from black>=22.8.0->ansible-lint)
+		Downloading platformdirs-4.3.8-py3-none-any.whl.metadata (12 kB)
+		Requirement already satisfied: tomli>=1.1.0 in /usr/local/lib/python3.9/site-packages (from black>=22.8.0->ansible-lint) (2.0.1)
+		Collecting attrs>=22.2.0 (from jsonschema>=4.10.0->ansible-lint)
+		Downloading attrs-25.3.0-py3-none-any.whl.metadata (10 kB)
+		Collecting jsonschema-specifications>=2023.03.6 (from jsonschema>=4.10.0->ansible-lint)
+		Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl.metadata (2.9 kB)
+		Collecting referencing>=0.28.4 (from jsonschema>=4.10.0->ansible-lint)
+		Downloading referencing-0.36.2-py3-none-any.whl.metadata (2.8 kB)
+		Collecting rpds-py>=0.7.1 (from jsonschema>=4.10.0->ansible-lint)
+		Downloading rpds_py-0.27.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.2 kB)
+		Collecting markdown-it-py>=2.2.0 (from rich>=12.0.0->ansible-lint)
+		Downloading markdown_it_py-3.0.0-py3-none-any.whl.metadata (6.9 kB)
+		Collecting pygments<3.0.0,>=2.13.0 (from rich>=12.0.0->ansible-lint)
+		Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+		Collecting ruamel.yaml.clib>=0.2.7 (from ruamel.yaml>=0.18.5->ansible-lint)
+		Downloading ruamel.yaml.clib-0.2.12-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.7 kB)
+		Collecting bracex>=2.1.1 (from wcmatch>=8.1.2->ansible-lint)
+		Downloading bracex-2.6-py3-none-any.whl.metadata (3.6 kB)
+		Requirement already satisfied: MarkupSafe>=2.0 in /usr/local/lib64/python3.9/site-packages (from jinja2>=3.0.0->ansible-core>=2.12.0->ansible-lint) (3.0.2)
+		Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=12.0.0->ansible-lint)
+		Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+		Requirement already satisfied: cffi>=1.12 in /usr/lib64/python3.9/site-packages (from cryptography->ansible-core>=2.12.0->ansible-lint) (1.14.5)
+		Requirement already satisfied: pycparser in /usr/lib/python3.9/site-packages (from cffi>=1.12->cryptography->ansible-core>=2.12.0->ansible-lint) (2.20)
+		Requirement already satisfied: ply==3.11 in /usr/lib/python3.9/site-packages (from pycparser->cffi>=1.12->cryptography->ansible-core>=2.12.0->ansible-lint) (3.11)
+		Downloading ansible_lint-6.22.2-py3-none-any.whl (297 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 298.0/298.0 kB 17.7 MB/s eta 0:00:00
+		Downloading ansible_compat-24.10.0-py3-none-any.whl (24 kB)
+		Downloading black-25.1.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl (1.8 MB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 62.5 MB/s eta 0:00:00
+		Downloading filelock-3.19.1-py3-none-any.whl (15 kB)
+		Downloading jsonschema-4.25.1-py3-none-any.whl (90 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90.0/90.0 kB 17.3 MB/s eta 0:00:00
+		Downloading pathspec-0.12.1-py3-none-any.whl (31 kB)
+		Downloading rich-14.1.0-py3-none-any.whl (243 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 243.4/243.4 kB 53.5 MB/s eta 0:00:00
+		Downloading ruamel.yaml-0.18.15-py3-none-any.whl (119 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 119.7/119.7 kB 32.6 MB/s eta 0:00:00
+		Downloading subprocess_tee-0.4.2-py3-none-any.whl (5.2 kB)
+		Downloading wcmatch-10.1-py3-none-any.whl (39 kB)
+		Downloading yamllint-1.37.1-py3-none-any.whl (68 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.8/68.8 kB 17.8 MB/s eta 0:00:00
+		Downloading attrs-25.3.0-py3-none-any.whl (63 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 63.8/63.8 kB 15.2 MB/s eta 0:00:00
+		Downloading bracex-2.6-py3-none-any.whl (11 kB)
+		Downloading click-8.1.8-py3-none-any.whl (98 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 98.2/98.2 kB 26.2 MB/s eta 0:00:00
+		Downloading jsonschema_specifications-2025.4.1-py3-none-any.whl (18 kB)
+		Downloading markdown_it_py-3.0.0-py3-none-any.whl (87 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 87.5/87.5 kB 24.4 MB/s eta 0:00:00
+		Downloading mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+		Downloading platformdirs-4.3.8-py3-none-any.whl (18 kB)
+		Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 106.3 MB/s eta 0:00:00
+		Downloading referencing-0.36.2-py3-none-any.whl (26 kB)
+		Downloading rpds_py-0.27.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (383 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 383.6/383.6 kB 65.8 MB/s eta 0:00:00
+		Downloading ruamel.yaml.clib-0.2.12-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (724 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 724.9/724.9 kB 89.0 MB/s eta 0:00:00
+		Downloading typing_extensions-4.14.1-py3-none-any.whl (43 kB)
+		━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 43.9/43.9 kB 11.9 MB/s eta 0:00:00
+		Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+		Installing collected packages: typing-extensions, subprocess-tee, ruamel.yaml.clib, rpds-py, pygments, platformdirs, pathspec, mypy-extensions, mdurl, filelock, click, bracex, attrs, yamllint, wcmatch, ruamel.yaml, referencing, markdown-it-py, black, rich, jsonschema-specifications, jsonschema, ansible-compat, ansible-lint
+		Successfully installed ansible-compat-24.10.0 ansible-lint-6.22.2 attrs-25.3.0 black-25.1.0 bracex-2.6 click-8.1.8 filelock-3.19.1 jsonschema-4.25.1 jsonschema-specifications-2025.4.1 markdown-it-py-3.0.0 mdurl-0.1.2 mypy-extensions-1.1.0 pathspec-0.12.1 platformdirs-4.3.8 pygments-2.19.2 referencing-0.36.2 rich-14.1.0 rpds-py-0.27.0 ruamel.yaml-0.18.15 ruamel.yaml.clib-0.2.12 subprocess-tee-0.4.2 typing-extensions-4.14.1 wcmatch-10.1 yamllint-1.37.1
+
+		[notice] A new release of pip is available: 24.0 -> 25.2
+		[notice] To update, run: python3 -m pip install --upgrade pip
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ ansible-lint playbook.yaml 
+		WARNING  Listing 1 violation(s) that are fatal
+		load-failure[runtimeerror]: Failed to load YAML file: playbook.yaml
+		playbook.yaml:1 while scanning for the next token
+		found character that cannot start any token
+		in "<unicode string>", line 26, column 1
+
+
+							Rule Violation Summary                     
+		count tag                        profile rule associated tags 
+			1 load-failure[runtimeerror] min     core, unskippable    
+
+		Failed: 1 failure(s), 0 warning(s) on 1 files.
+		thor@jumphost ~$ 
+		thor@jumphost ~$ 
+		thor@jumphost ~$ vi playbook.yaml 
 		thor@jumphost ~$ 
 		thor@jumphost ~$ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook.yaml
 
-		PLAY [Deploy Nautilus beta Java app on Tomcat] *******************************************
+		PLAY [Deploy Nautilus beta Java app on Tomcat] *******************************************************
 
-		TASK [Gathering Facts] *******************************************************************
-		fatal: [stapp01]: FAILED! => {"msg": "Missing sudo password"}
+		TASK [Gathering Facts] *******************************************************************************
+		ok: [stapp03]
 
-		PLAY RECAP *******************************************************************************
-		stapp01                    : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+		TASK [Install Tomcat and required packages] **********************************************************
+		changed: [stapp03]
 
-		thor@jumphost ~$ vi inventory.ini 
-		thor@jumphost ~$ 
-		thor@jumphost ~$ 
-		thor@jumphost ~$ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook.yaml
+		TASK [Change tomcat port in server.xml] **************************************************************
+		changed: [stapp03]
 
-		PLAY [Deploy Nautilus beta Java app on Tomcat] *******************************************
+		TASK [Remove old extracted ROOT app folder] **********************************************************
+		changed: [stapp03]
 
-		TASK [Gathering Facts] *******************************************************************
-		ok: [stapp01]
+		TASK [Copy ROOT.war from jump host to App Server 3] **************************************************
+		changed: [stapp03]
 
-		TASK [Install Tomcat and required packages] **********************************************
-		changed: [stapp01]
+		TASK [Enable and start Tomcat service] ***************************************************************
+		changed: [stapp03]
 
-		TASK [Change tomcat port to 8087 in server.xml] ******************************************
-		changed: [stapp01]
-
-		TASK [Remove old extracted ROOT app folder] **********************************************
-		changed: [stapp01]
-
-		TASK [Copy ROOT.war from jump host to App Server 1] **************************************
-		changed: [stapp01]
-
-		TASK [Enable and start Tomcat service] ***************************************************
-		changed: [stapp01]
-
-		PLAY RECAP *******************************************************************************
-		stapp01                    : ok=6    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+		PLAY RECAP *******************************************************************************************
+		stapp03                    : ok=6    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
 		thor@jumphost ~$ 
 		thor@jumphost ~$ 
-		thor@jumphost ~$ curl http://stapp01:6300
-		curl: (7) Failed to connect to stapp01 port 6300: Connection refused
-		thor@jumphost ~$ 
-		thor@jumphost ~$ 
-		thor@jumphost ~$ curl -k http://stapp01:6300
-		curl: (7) Failed to connect to stapp01 port 6300: Connection refused
-		thor@jumphost ~$ 
-		thor@jumphost ~$ 
-		thor@jumphost ~$ ssh tony@stapp01
-		Last login: Thu Aug 21 13:59:06 2025 from 172.16.238.3
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ curl http://stapp01:6300
-		curl: (7) Failed to connect to stapp01 port 6300: Connection refused
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ 
-		[tony@stapp01 ~]$ logout
-		Connection to stapp01 closed.
-		thor@jumphost ~$ 
-		thor@jumphost ~$ cat inventory.ini 
-		stapp01 ansible_user=tony ansible_ssh_pass=Ir0nM@n ansible_become_pass=Ir0nM@n
-		thor@jumphost ~$ 
+		thor@jumphost ~$ ssh banner@stapp03
+		banner@stapp03's password: 
+		Last login: Fri Aug 22 13:19:45 2025 from 172.16.238.3
+		[banner@stapp03 ~]$ 
+		[banner@stapp03 ~]$ 
+		[banner@stapp03 ~]$ curl http://stapp03:8083
+		<!DOCTYPE html>
+		<!--
+		To change this license header, choose License Headers in Project Properties.
+		To change this template file, choose Tools | Templates
+		and open the template in the editor.
+		-->
+		<html>
+			<head>
+				<title>SampleWebApp</title>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			</head>
+			<body>
+				<h2>Welcome to xFusionCorp Industries!</h2>
+				<br>
+			
+			</body>
+		</html>
+		[banner@stapp03 ~]$ 
+		[banner@stapp03 ~]$ 
+		[banner@stapp03 ~]$ 
 
 
 <h3></h3>

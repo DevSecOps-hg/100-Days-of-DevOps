@@ -311,5 +311,120 @@ Note: The kubectl utility on jump_host is configured to operate with the Kuberne
 
 
 <h3>13 Deploy Highly Available Pods with ReplicationController</h3>
+The Nautilus DevOps team is establishing a ReplicationController to deploy multiple pods for hosting applications that require a highly available infrastructure. Follow the specifications below to create the ReplicationController:
+
+Create a ReplicationController using the httpd image with latest tag, and name it httpd-replicationcontroller.
+Assign labels app as httpd_app, and type as front-end. Ensure the container is named httpd-container and set the replica count to 3.
+All pods should be running state post-deployment.
+Note: The kubectl utility on jump_host is configured to operate with the Kubernetes cluster.
+
+	thor@jumphost ~$ k create deployment httpd-replicationcontroller --image httpd:latest --replicas 3 --dry-run=client -o yaml > rc.yaml
+	thor@jumphost ~$ 
+	thor@jumphost ~$ 
+	thor@jumphost ~$ cat rc.yaml 
+	apiVersion: apps/v1							
+	kind: Deployment							
+	metadata:
+	creationTimestamp: null
+	labels:
+		app: httpd-replicationcontroller
+	name: httpd-replicationcontroller
+	spec:
+	replicas: 3
+	selector:									-- remove
+		matchLabels:
+		app: httpd-replicationcontroller
+	strategy: {}								-- remove
+	template:
+		metadata:
+		creationTimestamp: null
+		labels:
+			app: httpd-replicationcontroller
+		spec:
+		containers:
+		- image: httpd:latest
+			name: httpd
+			resources: {}
+	status: {}
+	thor@jumphost ~$ 
+	thor@jumphost ~$ vi rc.yaml 
+	thor@jumphost ~$ cat rc.yaml
+	apiVersion: apps/v1
+	kind: ReplicationController					-- change	
+	metadata:
+	creationTimestamp: null
+	labels:
+		app: httpd-replicationcontroller
+		app: httpd_app							-- add
+		type: front-end							-- add
+	name: httpd-replicationcontroller
+	spec:
+	replicas: 3
+	template:
+		metadata:
+		creationTimestamp: null
+		labels:
+			app: httpd-replicationcontroller
+			app: httpd_app						-- add
+			type: front-end						-- add
+		spec:
+		containers:
+		- image: httpd:latest
+			name: httpd-container				-- change
+			resources: {}
+	status: {}
+	thor@jumphost ~$ k create -f rc.yaml 
+	error: resource mapping not found for name: "httpd-replicationcontroller" namespace: "" from "rc.yaml": no matches for kind "ReplicationController" in version "apps/v1"
+	ensure CRDs are installed first
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k api-resources | grep -i replication
+	replicationcontrollers            rc           v1                                     true         ReplicationController
+	thor@jumphost ~$ 
+	thor@jumphost ~$ 
+	thor@jumphost ~$ vi rc.yaml 
+	thor@jumphost ~$ 
+	thor@jumphost ~$ cat rc.yaml 
+	apiVersion: v1								-- change
+	kind: ReplicationController
+	metadata:
+	creationTimestamp: null
+	labels:
+		app: httpd-replicationcontroller
+		app: httpd_app
+		type: front-end
+	name: httpd-replicationcontroller
+	spec:
+	replicas: 3
+	template:
+		metadata:
+		creationTimestamp: null
+		labels:
+			app: httpd-replicationcontroller
+			app: httpd_app
+			type: front-end
+		spec:
+		containers:
+		- image: httpd:latest
+			name: httpd-container
+			resources: {}
+	status: {}
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k create -f rc.yaml 
+	replicationcontroller/httpd-replicationcontroller created
+	thor@jumphost ~$ 
+	thor@jumphost ~$ 
+	thor@jumphost ~$ k get rc,pod
+	NAME                                                DESIRED   CURRENT   READY   AGE
+	replicationcontroller/httpd-replicationcontroller   3         3         3       8s
+
+	NAME                                    READY   STATUS    RESTARTS   AGE
+	pod/httpd-replicationcontroller-pm9sz   1/1     Running   0          8s
+	pod/httpd-replicationcontroller-s4p8z   1/1     Running   0          8s
+	pod/httpd-replicationcontroller-xvgt4   1/1     Running   0          8s
+	thor@jumphost ~$ 
+	thor@jumphost ~$ 
+	thor@jumphost ~$ 
+
+
 
 <h3>14 Resolve VolumeMounts Issue in Kubernetes</h3>

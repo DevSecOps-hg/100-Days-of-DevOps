@@ -1550,5 +1550,135 @@ The Nautilus application development team recently finished the beta version of 
 		[banner@stapp03 ~]$ 
 
 
-<h3></h3>
+<h3>Day 12: Linux Network Services</h3>
+Our monitoring tool has reported an issue in Stratos Datacenter. One of our app servers has an issue, as its Apache service is not reachable on port 5001 (which is the Apache port). The service itself could be down, the firewall could be at fault, or something else could be causing the issue.
+
+Use tools like telnet, netstat, etc. to find and fix the issue. Also make sure Apache is reachable from the jump host without compromising any security settings.
+
+Once fixed, you can test the same using command curl http://stapp01:5001 command from jump host.
+
+		thor@jumphost ~$ ssh tony@stapp01
+		The authenticity of host 'stapp01 (172.16.238.10)' can't be established.
+		ED25519 key fingerprint is SHA256:kzpLpYXmJg1Szy9ZICvev0UOkNwZuGQvgYOUbiSuoYM.
+		This key is not known by any other names
+		Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+		Warning: Permanently added 'stapp01' (ED25519) to the list of known hosts.
+		tony@stapp01's password: 
+		[tony@stapp01 ~]$ 
+
+		[tony@stapp01 ~]$ netstat -ntlup
+		(No info could be read for "-p": geteuid()=1001 but you should be root.)
+		Active Internet connections (only servers)
+		Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+		tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -                   
+		tcp        0      0 127.0.0.1:3004          0.0.0.0:*               LISTEN      -                   
+		tcp        0      0 127.0.0.11:40085        0.0.0.0:*               LISTEN      -                   
+		tcp6       0      0 :::22                   :::*                    LISTEN      -                   
+		udp        0      0 127.0.0.11:40382        0.0.0.0:*                           -                   
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ sudo systemctl status httpd
+
+		We trust you have received the usual lecture from the local System
+		Administrator. It usually boils down to these three things:
+
+			#1) Respect the privacy of others.
+			#2) Think before you type.
+			#3) With great power comes great responsibility.
+
+		[sudo] password for tony: 
+		● httpd.service - The Apache HTTP Server
+		Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; vendor preset: disabled)
+		Active: failed (Result: exit-code) since Fri 2025-08-22 13:50:36 UTC; 4min 17s ago
+			Docs: man:httpd.service(8)
+		Process: 489 ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND (code=exited, status=1/FAILURE)
+
+		Main PID: 489 (code=exited, status=1/FAILURE)
+		Status: "Reading configuration..."
+
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com httpd[489]: (98)Address already in use: AH00072: make_
+		sock: could not bind to address 0.0.0.0:3004
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com httpd[489]: no listening sockets available, shutting d
+		own
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com httpd[489]: AH00015: Unable to open logs
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Chi
+		ld 489 belongs to httpd.service.
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Mai
+		n process exited, code=exited, status=1/FAILURE
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Fai
+		led with result 'exit-code'.
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Cha
+		nged start -> failed
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Job
+		httpd.service/start finished, result=failed
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Failed to start Th
+		e Apache HTTP Server.
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Uni
+		t entered failed state.
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ 
+		[tony@stapp01 ~]$ sudo journalctl -xe | grep httpd
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd-init.service: Failed to load configuration: No such file or directory
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Trying to enqueue job httpd.service/restart/replace
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd-init.service: Cannot add dependency job, ignoring: Unit httpd-init.service not found.
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Installed new job httpd.service/restart as 54
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Enqueued job httpd.service/restart as 54
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Job httpd.service/restart finished, result=done
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Converting job httpd.service/restart -> httpd.service/start
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Failed to reset devices.list: Operation not permitted
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Failed to set invocation ID on control group /docker/9f9a3980c27e7d725cab825d9202fa12b4de79802e068b0bee621b2b887136fd/system.slice/httpd.service, ignoring: Operation not permitted
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Passing 0 fds to service
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: About to execute: /usr/sbin/httpd $OPTIONS -DFOREGROUND
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Forked /usr/sbin/httpd as 489
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Changed dead -> start
+		-- Subject: Unit httpd.service has begun start-up
+		-- Unit httpd.service has begun starting up.
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Sent message type=signal sender=org.freedesktop.systemd1 destination=n/a path=/org/freedesktop/systemd1/unit/httpd_2eservice interface=org.freedesktop.DBus.Properties member=PropertiesChanged cookie=13 reply_cookie=0 signature=sa{sv}as error-name=n/a error-message=n/a
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Sent message type=signal sender=org.freedesktop.systemd1 destination=n/a path=/org/freedesktop/systemd1/unit/httpd_2eservice interface=org.freedesktop.DBus.Properties member=PropertiesChanged cookie=14 reply_cookie=0 signature=sa{sv}as error-name=n/a error-message=n/a
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Got message type=method_call sender=n/a destination=org.freedesktop.systemd1 path=/org/freedesktop/systemd1/unit/httpd_2eservice interface=org.freedesktop.DBus.Properties member=Get cookie=3 reply_cookie=0 signature=ss error-name=n/a error-message=n/a
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[489]: Successfully mounted /tmp/systemd-private-3de91ca9d8294e25a7fcf63a75afa7a9-httpd.service-GC5pQb/tmp to /run/systemd/unit-root/tmp
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[489]: Successfully mounted /var/tmp/systemd-private-3de91ca9d8294e25a7fcf63a75afa7a9-httpd.service-5QvWjm/tmp to /run/systemd/unit-root/var/tmp
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[489]: httpd.service: Executing: /usr/sbin/httpd -DFOREGROUND
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Got notification message from PID 489 (RELOADING=1, STATUS=Reading configuration...)
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Sent message type=signal sender=org.freedesktop.systemd1 destination=n/a path=/org/freedesktop/systemd1/unit/httpd_2eservice interface=org.freedesktop.DBus.Properties member=PropertiesChanged cookie=17 reply_cookie=0 signature=sa{sv}as error-name=n/a error-message=n/a
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Sent message type=signal sender=org.freedesktop.systemd1 destination=n/a path=/org/freedesktop/systemd1/unit/httpd_2eservice interface=org.freedesktop.DBus.Properties member=PropertiesChanged cookie=18 reply_cookie=0 signature=sa{sv}as error-name=n/a error-message=n/a
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com httpd[489]: AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using stapp01.stratos.xfusioncorp.com. Set the 'ServerName' directive globally to suppress this message
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com httpd[489]: (98)Address already in use: AH00072: make_sock: could not bind to address 0.0.0.0:3004
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com httpd[489]: no listening sockets available, shutting down
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com httpd[489]: AH00015: Unable to open logs
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Received SIGCHLD from PID 489 (httpd).
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Child 489 (httpd) died (code=exited, status=1/FAILURE)
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Child 489 belongs to httpd.service.
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Main process exited, code=exited, status=1/FAILURE
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Failed with result 'exit-code'.
+		-- The unit httpd.service has entered the 'failed' state with result 'exit-code'.
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Changed start -> failed
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Job httpd.service/start finished, result=failed
+		-- Subject: Unit httpd.service has failed
+		-- Unit httpd.service has failed.
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: httpd.service: Unit entered failed state.
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Spawning thread to nuke /tmp/systemd-private-3de91ca9d8294e25a7fcf63a75afa7a9-httpd.service-GC5pQb
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Spawning thread to nuke /var/tmp/systemd-private-3de91ca9d8294e25a7fcf63a75afa7a9-httpd.service-5QvWjm
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Sent message type=signal sender=org.freedesktop.systemd1 destination=n/a path=/org/freedesktop/systemd1/unit/httpd_2eservice interface=org.freedesktop.DBus.Properties member=PropertiesChanged cookie=21 reply_cookie=0 signature=sa{sv}as error-name=n/a error-message=n/a
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Sent message type=signal sender=org.freedesktop.systemd1 destination=n/a path=/org/freedesktop/systemd1/unit/httpd_2eservice interface=org.freedesktop.DBus.Properties member=PropertiesChanged cookie=22 reply_cookie=0 signature=sa{sv}as error-name=n/a error-message=n/a
+		Aug 22 13:50:36 stapp01.stratos.xfusioncorp.com systemd[1]: Got message type=method_call sender=n/a destination=org.freedesktop.systemd1 path=/org/freedesktop/systemd1/unit/httpd_2eservice interface=org.freedesktop.DBus.Properties member=Get cookie=4 reply_cookie=0 signature=ss error-name=n/a error-message=n/a
+		Aug 22 13:54:53 stapp01.stratos.xfusioncorp.com sudo[606]:     tony : TTY=pts/0 ; PWD=/home/tony ; USER=root ; COMMAND=/bin/systemctl status httpd
+		Aug 22 13:54:53 stapp01.stratos.xfusioncorp.com dbus-daemon[570]: [system] Activating via systemd: service name='org.freedesktop.login1' unit='dbus-org.freedesktop.login1.service' requested by ':1.4' (uid=0 pid=606 comm="sudo systemctl status httpd " label="unconfined")
+		Aug 22 13:54:53 stapp01.stratos.xfusioncorp.com systemd[1]: Got message type=method_call sender=n/a destination=org.freedesktop.systemd1 path=/org/freedesktop/systemd1/unit/httpd_2eservice interface=org.freedesktop.DBus.Properties member=GetAll cookie=1 reply_cookie=0 signature=s error-name=n/a error-message=n/a
+		Aug 22 13:54:53 stapp01.stratos.xfusioncorp.com systemd[1]: Preset files say disable httpd.service.
+
+		[tony@stapp01 ~]$ sudo journalctl -xe | grep httpd
+		[tony@stapp01 ~]$ sudo netstat -tulpn | grep :3004
+		[tony@stapp01 ~]$ sudo systemctl stop sendmail
+		[tony@stapp01 ~]$ sudo netstat -tulpn | grep :3004
+		[tony@stapp01 ~]$ sudo systemctl start httpd
+		[tony@stapp01 ~]$ sudo netstat -tulpn
+		[tony@stapp01 ~]$ sudo iptables -L -n
+		[tony@stapp01 ~]$ sudo iptables -I INPUT 4 -p tcp --dport 3004 -j ACCEPT
+		[tony@stapp01 ~]$ sudo service iptables save
+		[tony@stapp01 ~]$ logout
+
+		thor@jumphost ~$ curl http://stapp01:3004
+
+
 <h3></h3>
